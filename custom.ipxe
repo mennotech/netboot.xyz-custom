@@ -9,6 +9,8 @@ menu This is a Test Menu
 item --gap This is the first sub menu
 item option_one ${space} Boot WDS Server
 item option_two ${space} Boot Windows11 24H2 EDU ISO
+item option_three ${space} Boot Windows11 22H2 EDU ISO
+item option_four ${space} Boot Windows WIM Mode
 choose custom_choice || goto custom_exit
 echo ${cls}
 goto ${custom_choice}
@@ -22,6 +24,24 @@ goto custom
 # Start Windows 11 installer DVD
 sanboot --no-describe --drive 0x81 ${live_endpoint}/Win11_24H2_English_x64_EDU.ISO || goto failed
 goto custom
+
+:option_three
+# Start Windows 11 installer DVD
+sanboot --no-describe --drive 0x81 ${live_endpoint}/Win11_22H2_English_x64_EDU.ISO || goto failed
+goto custom
+
+
+:option_four
+:boot
+imgfree
+kernel http://${boot_domain}/wimboot
+initrd -n bootmgr     ${win_base_url}/${win_arch}/bootmgr       bootmgr ||
+initrd -n bootmgr.efi ${win_base_url}/${win_arch}/bootmgr.efi   bootmgr.efi ||      
+initrd -n bcd         ${win_base_url}/${win_arch}/boot/bcd      bcd ||
+initrd -n boot.sdi    ${win_base_url}/${win_arch}/boot/boot.sdi boot.sdi ||
+initrd -n boot.wim    ${win_base_url}/${win_arch}/sources/boot.wim boot.wim
+boot
+
 
 :custom_exit
 exit
