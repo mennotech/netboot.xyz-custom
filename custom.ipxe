@@ -1,12 +1,27 @@
 #!ipxe
 ###
-### netboot.xyz-custom menu
+### netboot.xyz-custom menu example
 ###
 
-:start
-echo Hello world!
-sleep 10
+:custom
+clear custom_choice
+menu This is a Test Menu
+item --gap This is the first sub menu
+item option_one ${space} Boot WDS Server
+item option_two ${space} Boot Windows11 24H2 EDU ISO
+choose custom_choice || goto custom_exit
+echo ${cls}
+goto ${custom_choice}
 goto custom_exit
 
+:option_one
+chain tftp://${wds_server}/boot/x64/wdsmgfw.efi
+goto custom
+
+:option_two
+# Start Windows 11 installer DVD
+sanboot --no-describe --drive 0x81 ${live_endpoint}/Win11_24H2_English_x64_EDU.ISO || goto failed
+goto custom
+
 :custom_exit
-exit 0
+exit
