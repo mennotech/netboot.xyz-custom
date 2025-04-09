@@ -32,7 +32,6 @@ goto custom
 
 
 :option_four
-:boot
 imgfree
 kernel http://${boot_domain}/wimboot
 initrd -n bootmgr     ${win_base_url}/${win_arch}/bootmgr       bootmgr ||
